@@ -132,7 +132,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.trackerapptemp"
+        applicationId "com.ryu.tracker"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
