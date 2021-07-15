@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { getVersion } from '../services/ATService';
+import { useATContext } from '../contexts/ATContextProvider';
 
 export default function LoadingPage({ navigation }) {
-    const [version, setVersion] = useState('');
+    const { version, fetchVersion } = useATContext();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getVersion()
-        .then(version => {
-            setVersion(version);
-            setLoading(false);
-        });
+        fetchVersion()
+        .then(setLoading(false));
     }, [])
 
     useEffect(() => {
