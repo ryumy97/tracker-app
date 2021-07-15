@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { useATContext } from '../contexts/ATContextProvider';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function LoadingPage({ navigation }) {
     const { version, fetchVersion } = useATContext();
     const [loading, setLoading] = useState(true);
     const [shouldWait, setShouldWait] = useState(true);
 
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
+        const timeOut = setTimeout(() => {
+            setShouldWait(false)
+        }, 1000)
+
+        return () => clearTimeout(timeOut)
+    }, []))
+
+    useFocusEffect(useCallback(() => {
         fetchVersion()
         .then(setLoading(false));
-    }, [])
-
-    useEffect(() => {
-        if (!loading) {
-            const timeOut = setTimeout(() => {
-                setShouldWait(false)
-            }, 3000)
-            return () => clearTimeout(timeOut)
-        }
-    }, [loading])
+    }))
 
     useEffect(() => {
         if (!shouldWait && !loading) {
