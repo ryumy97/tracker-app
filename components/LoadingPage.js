@@ -2,13 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { getVersion } from '../services/ATService';
 
-export default function LoadingPage() {
+export default function LoadingPage({ navigation }) {
     const [version, setVersion] = useState('');
+    const [loading, setLoading] = useState(true);
 
-    useEffect(async () => {
-        const v = await getVersion();
-        setVersion(v);
-    }, []);
+    useEffect(() => {
+        getVersion()
+        .then(version => {
+            setVersion(version);
+            setLoading(false);
+        });
+    }, [])
+
+    useEffect(() => {
+        if (!loading) {
+            navigation.navigate('Map')
+        }
+    }, [loading])
 
     return (
         <View style={styles.container}>

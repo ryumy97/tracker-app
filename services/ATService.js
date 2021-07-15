@@ -9,10 +9,10 @@ export async function getVersion() {
             'Ocp-Apim-Subscription-Key': AT_API_KEY,
         },
     })
-        .then((res) => res.json())
-        .then(({ response }) => {
-            return response[0].version;
-        });
+    .then((res) => res.json())
+    .then(({ response }) => {
+        return response[0].version;
+    });
     console.log(version);
     return version;
 }
