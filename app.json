@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "tracker-app-temp",
-    "slug": "tracker-app-temp",
+    "name": "tracker-app",
+    "slug": "tracker-app",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
     ]
   },
-  "name": "tracker-app-temp"
+  "name": "tracker-app"
 }

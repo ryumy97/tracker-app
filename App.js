@@ -1,33 +1,31 @@
-import { StatusBar } from 'expo-status-bar';
+import 'react-native-gesture-handler';
+
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import MapView from 'react-native-maps';
+import LoadingPage from './components/LoadingPage';
+import MapPage from './components/MapPage';
+import ATContextProvider from './contexts/ATContextProvider';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: -41.28666552,
-          longitude: 171.772996908,
-          latitudeDelta: 24,
-          longitudeDelta: 12,
-        }}>
-      </MapView>
-    </View>
+    <ATContextProvider>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false
+          }}
+        >
+          <Stack.Screen
+            name="Loading"
+            component={LoadingPage}
+          />
+          <Stack.Screen name="Map" component={MapPage} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ATContextProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject
-  }
-});
