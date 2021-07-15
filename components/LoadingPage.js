@@ -20,7 +20,7 @@ export default function LoadingPage({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>{version}</Text>
+            <Text style={styles.text}>Loading...</Text>
         </View>
     );
 }
@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
     text: {
+        fontSize: 16,
         color: '#fff',
     },
 });
