@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { getVersion } from '../service/ATService';
-export default function LoadingView() {
+import { getVersion } from '../services/ATService';
+
+export default function LoadingPage() {
     const [version, setVersion] = useState('');
 
     useEffect(async () => {

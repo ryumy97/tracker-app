@@ -1,6 +1,7 @@
 import { AT_API_URL, AT_API_KEY } from '@env';
 
 export async function getVersion() {
+    console.log(AT_API_URL, AT_API_KEY)
     const version = await fetch(`${AT_API_URL}/v2/gtfs/versions`, {
         headers: {
             Accept: 'application/json',

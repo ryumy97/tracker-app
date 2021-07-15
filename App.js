@@ -1,5 +1,5 @@
 import React from 'react';
-import LoadingPage from './component/LoadingPage';
+import LoadingPage from './components/LoadingPage';
 
 
 export default function App() {
