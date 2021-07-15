@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { getVersion } from '../services/ATService';
 import { useATContext } from '../contexts/ATContextProvider';
 
 export default function LoadingPage({ navigation }) {
     const { version, fetchVersion } = useATContext();
     const [loading, setLoading] = useState(true);
+    const [shouldWait, setShouldWait] = useState(true);
 
     useEffect(() => {
         fetchVersion()
@@ -14,13 +14,22 @@ export default function LoadingPage({ navigation }) {
 
     useEffect(() => {
         if (!loading) {
-            navigation.navigate('Map')
+            const timeOut = setTimeout(() => {
+                setShouldWait(false)
+            }, 3000)
+            return () => clearTimeout(timeOut)
         }
     }, [loading])
 
+    useEffect(() => {
+        if (!shouldWait && !loading) {
+            navigation.navigate('Map')
+        }
+    }, [shouldWait, loading])
+
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Loading...</Text>
+            <Text style={styles.text}>{version}</Text>
         </View>
     );
 }
