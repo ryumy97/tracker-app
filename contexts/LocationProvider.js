@@ -37,7 +37,9 @@ export default function LocationProvider({ children }) {
                 setLocation(location);
             });
 
-            return () => positionWatch?.remove();
+            if (positionWatch && positionWatch.remove) {
+                return () => positionWatch?.remove();
+            }
         }
     }, [status]);
 
@@ -50,7 +52,9 @@ export default function LocationProvider({ children }) {
                 }
             });
 
-            return () => headingWatch?.remove();
+            if (headingWatch && headingWatch.remove) {
+                return () => headingWatch?.remove();
+            }
         }
     }, [status]);
 
