@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Keyboard, StyleSheet, Text, View } from 'react-native';
 import MapView from 'react-native-maps';
 import { useLocation } from '../../contexts/LocationProvider';
 import CurrentLocationMarker from './CurrentLocationMarker';
+import SearchBar from './SearchBar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MapPage() {
     const { errorMsg, location } = useLocation();
@@ -36,8 +38,24 @@ export default function MapPage() {
             <MapView style={styles.map} region={region}>
                 <CurrentLocationMarker />
             </MapView>
+            <SafeAreaView style={styles.widgetLayer}>
+                <WidgetTopLayer />
+                <WidgetBottomLayer />
+            </SafeAreaView>
         </View>
     );
+}
+
+function WidgetTopLayer() {
+    return (
+        <View>
+            <SearchBar></SearchBar>
+        </View>
+    );
+}
+
+function WidgetBottomLayer() {
+    return <View></View>;
 }
 
 const styles = StyleSheet.create({
@@ -50,5 +68,11 @@ const styles = StyleSheet.create({
     },
     map: {
         ...StyleSheet.absoluteFillObject,
+    },
+    widgetLayer: {
+        ...StyleSheet.absoluteFillObject,
+        flex: 1,
+        justifyContent: 'space-between',
+        alignItems: 'stretch',
     },
 });
