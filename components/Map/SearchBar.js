@@ -1,10 +1,16 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-export default function SearchBar() {
+const SearchBar = forwardRef((props, ref) => {
     const [isFocused, setIsFocused] = useState(false);
     const TextInputRef = useRef(null);
+
+    useImperativeHandle(ref, () => ({
+        blur: () => {
+            TextInputRef.current.blur();
+        },
+    }));
 
     return (
         <Pressable
@@ -40,7 +46,7 @@ export default function SearchBar() {
             ) : null}
         </Pressable>
     );
-}
+});
 
 const styles = StyleSheet.create({
     container: {
@@ -72,3 +78,5 @@ const styles = StyleSheet.create({
         flexGrow: 0,
     },
 });
+
+export default SearchBar;

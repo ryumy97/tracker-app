@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Keyboard, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import MapView from 'react-native-maps';
 import { useLocation } from '../../contexts/LocationProvider';
 import CurrentLocationMarker from './CurrentLocationMarker';
@@ -8,54 +8,45 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function MapPage() {
     const { errorMsg, location } = useLocation();
-    const [region, setRegion] = useState({
-        latitude: -41.28666552,
-        longitude: 171.772996908,
-        latitudeDelta: 24,
-        longitudeDelta: 12,
-    });
+    const [isMapReady, setIsMapReady] = useState(false);
+    const mapRef = useRef(null);
+    const searchBarRef = useRef(null);
 
     useEffect(() => {
-        if (location && location.coords) {
+        if (isMapReady && location && location.coords) {
             const {
                 coords: { latitude, longitude },
             } = location;
-            setRegion((region) => {
-                return {
-                    ...region,
-                    latitude,
-                    longitude,
-                    latitudeDelta: 0.001,
-                    longitudeDelta: 0.005,
-                };
-            });
+            mapRef.current.animateToRegion({ latitude, longitude, latitudeDelta: 0.001, longitudeDelta: 0.005 }, 2000);
         }
-    }, [location]);
+    }, [location, isMapReady]);
 
     return (
         <View style={styles.container}>
             {errorMsg ? <Text>{errorMsg}</Text> : null}
-            <MapView style={styles.map} region={region}>
+            <MapView
+                ref={mapRef}
+                style={styles.map}
+                initialRegion={{
+                    latitude: -36.84513286676243,
+                    latitudeDelta: 0.7712628982843839,
+                    longitude: 174.75105894729495,
+                    longitudeDelta: 0.45652840286496144,
+                }}
+                onMapReady={() => {
+                    setIsMapReady(true);
+                }}
+                onTouchStart={() => {
+                    searchBarRef.current.blur();
+                }}
+            >
                 <CurrentLocationMarker />
             </MapView>
-            <SafeAreaView style={styles.widgetLayer}>
-                <WidgetTopLayer />
-                <WidgetBottomLayer />
+            <SafeAreaView style={styles.searchBar}>
+                <SearchBar ref={searchBarRef}></SearchBar>
             </SafeAreaView>
         </View>
     );
-}
-
-function WidgetTopLayer() {
-    return (
-        <View>
-            <SearchBar></SearchBar>
-        </View>
-    );
-}
-
-function WidgetBottomLayer() {
-    return <View></View>;
 }
 
 const styles = StyleSheet.create({
@@ -69,10 +60,11 @@ const styles = StyleSheet.create({
     map: {
         ...StyleSheet.absoluteFillObject,
     },
-    widgetLayer: {
-        ...StyleSheet.absoluteFillObject,
-        flex: 1,
-        justifyContent: 'space-between',
-        alignItems: 'stretch',
+    searchBar: {
+        position: 'absolute',
+        top: 0,
+        width: '100%',
+        marginLeft: 5,
+        marginRight: 5,
     },
 });
