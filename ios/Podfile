@@ -20,4 +20,6 @@ target 'trackerapptemp' do
   # end
   pod 'react-native-config', :path => '../node_modules/react-native-config'
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
 end

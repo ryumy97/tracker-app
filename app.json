@@ -1,14 +1,13 @@
 {
-  "expo": {
-    "name": "tracker-app",
-    "slug": "tracker-app",
-    "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "plugins": [
-      "expo-location"
-    ]
-  },
-  "name": "tracker-app"
+    "expo": {
+        "name": "tracker-app",
+        "slug": "tracker-app",
+        "version": "1.0.0",
+        "assetBundlePatterns": ["**/*"],
+        "plugins": ["expo-location"],
+        "android": {
+            "softwareKeyboardLayoutMode": "pan"
+        }
+    },
+    "name": "tracker-app"
 }
