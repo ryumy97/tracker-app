@@ -40,7 +40,7 @@ export default function MapPage() {
                     searchBarRef.current.blur();
                 }}
             >
-                <CurrentLocationMarker />
+                <CurrentLocationMarker trackViewChanges={false} />
             </MapView>
             <SafeAreaView style={styles.searchBar}>
                 <SearchBar ref={searchBarRef}></SearchBar>
