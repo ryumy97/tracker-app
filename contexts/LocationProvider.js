@@ -16,7 +16,7 @@ export default function LocationProvider({ children }) {
     const [location, setLocation] = useState({});
     const [heading, setHeading] = useState();
     const [errorMsg, setErrorMsg] = useState('');
-    const [status, setStatus] = useState(true);
+    const [status, setStatus] = useState(false);
 
     useEffect(() => {
         (async () => {
