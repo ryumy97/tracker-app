@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { Dimensions } from 'react-native';
 import * as Location from 'expo-location';
 
 const LocationContext = createContext();
@@ -17,6 +18,9 @@ export default function LocationProvider({ children }) {
     const [heading, setHeading] = useState();
     const [errorMsg, setErrorMsg] = useState('');
     const [status, setStatus] = useState(false);
+
+    const { width, height } = Dimensions.get('window');
+    const aspectRatio = width / height;
 
     useEffect(() => {
         (async () => {
@@ -61,6 +65,9 @@ export default function LocationProvider({ children }) {
     return (
         <LocationContext.Provider
             value={{
+                aspectRatio,
+                width,
+                height,
                 location,
                 heading,
                 errorMsg,
