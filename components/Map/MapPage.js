@@ -17,7 +17,7 @@ export default function MapPage() {
     const mapRef = useRef(null);
     const searchBarRef = useRef(null);
 
-    const index = new Supercluster({ minZoom: 1, maxZoom: 16, extent: 512, radius: width * 0.045 });
+    const index = new Supercluster({ minZoom: 8, maxZoom: 15, extent: 140, radius: width * 0.045 });
     index.load(
         stops.map(({ stop_lon, stop_lat }) => {
             return {
@@ -63,6 +63,7 @@ export default function MapPage() {
                 }}
                 onRegionChangeComplete={({ latitude, longitude, latitudeDelta, longitudeDelta }) => {
                     const zoom = Math.round(Math.log(360 / longitudeDelta) / Math.LN2);
+                    console.log(zoom);
                     const cluster = index.getClusters(
                         [
                             longitude - longitudeDelta,
@@ -78,38 +79,45 @@ export default function MapPage() {
                 <CurrentLocationMarker tracksViewChanges={false} />
 
                 {stopMarkers &&
-                    stopMarkers.map(({ geometry: { coordinates }, id, properties: { cluster, point_count } }) => {
-                        if (cluster) {
+                    stopMarkers.map(
+                        (
+                            { geometry: { coordinates }, id, properties: { cluster, cluster_id, point_count } },
+                            index
+                        ) => {
+                            if (cluster) {
+                                return (
+                                    <Marker
+                                        key={`${id} + ${cluster_id}`}
+                                        style={styles.clusterMarker}
+                                        coordinate={{
+                                            latitude: coordinates[1],
+                                            longitude: coordinates[0],
+                                        }}
+                                        tracksViewChanges={false}
+                                    >
+                                        <View style={styles.clusterView}>
+                                            <Text style={styles.clusterText}>{point_count}</Text>
+                                        </View>
+                                    </Marker>
+                                );
+                            }
                             return (
                                 <Marker
-                                    key={id}
-                                    style={styles.clusterMarker}
+                                    key={`${id} + ${index}`}
+                                    trackViewChanges={false}
+                                    anchor={{ x: 0.5, y: 0.5 }}
+                                    style={styles.stops_marker}
                                     coordinate={{
                                         latitude: coordinates[1],
                                         longitude: coordinates[0],
                                     }}
+                                    tracksViewChanges={false}
                                 >
-                                    <View style={styles.clusterView}>
-                                        <Text style={styles.clusterText}>{point_count}</Text>
-                                    </View>
+                                    <View style={styles.stops_view}></View>
                                 </Marker>
                             );
                         }
-                        return (
-                            <Marker
-                                key={id}
-                                trackViewChanges={false}
-                                anchor={{ x: 0.5, y: 0.5 }}
-                                style={styles.stops_marker}
-                                coordinate={{
-                                    latitude: coordinates[1],
-                                    longitude: coordinates[0],
-                                }}
-                            >
-                                <View style={styles.stops_view}></View>
-                            </Marker>
-                        );
-                    })}
+                    )}
             </MapView>
             <SafeAreaView style={styles.searchBar}>
                 <SearchBar ref={searchBarRef}></SearchBar>
