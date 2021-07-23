@@ -17,9 +17,8 @@ export default function MapPage() {
     const mapRef = useRef(null);
     const searchBarRef = useRef(null);
 
-    const index = new Supercluster({ minZoom: 8, maxZoom: 15, extent: 140, radius: width * 0.045 });
-    index.load(
-        stops.map(({ stop_lon, stop_lat }) => {
+    function stopsToGeoJson(stops) {
+        return stops.map(({ stop_lon, stop_lat }) => {
             return {
                 type: 'Feature',
                 geometry: {
@@ -28,8 +27,14 @@ export default function MapPage() {
                 },
                 properties: { point_count: 0 },
             };
-        })
-    );
+        });
+    }
+
+    const zoomInCluster = new Supercluster({ minZoom: 15, maxZoom: 16, extent: 256, radius: width * 0.045 });
+    zoomInCluster.load(stopsToGeoJson(stops));
+
+    const zoomOutCluster = new Supercluster({ minZoom: 6, maxZoom: 14, extent: 80, radius: width * 0.045 });
+    zoomOutCluster.load(stopsToGeoJson(stops));
 
     useEffect(() => {
         if (isMapReady && location && location.coords) {
@@ -37,7 +42,7 @@ export default function MapPage() {
                 coords: { latitude, longitude },
             } = location;
             mapRef.current.animateToRegion(
-                { latitude, longitude, latitudeDelta: 0.015, longitudeDelta: 0.001 * aspectRatio },
+                { latitude, longitude, latitudeDelta: 0.015, longitudeDelta: 0.015 * aspectRatio },
                 500
             );
         }
@@ -64,15 +69,18 @@ export default function MapPage() {
                 onRegionChangeComplete={({ latitude, longitude, latitudeDelta, longitudeDelta }) => {
                     const zoom = Math.round(Math.log(360 / longitudeDelta) / Math.LN2);
                     console.log(zoom);
-                    const cluster = index.getClusters(
-                        [
-                            longitude - longitudeDelta,
-                            latitude - latitudeDelta,
-                            longitude + longitudeDelta,
-                            latitude + latitudeDelta,
-                        ],
-                        zoom
-                    );
+                    let cluster = [];
+                    const bbox = [
+                        longitude - longitudeDelta,
+                        latitude - latitudeDelta,
+                        longitude + longitudeDelta,
+                        latitude + latitudeDelta,
+                    ];
+                    if (zoom > 14) {
+                        cluster = zoomInCluster.getClusters(bbox, zoom);
+                    } else {
+                        cluster = zoomOutCluster.getClusters(bbox, zoom);
+                    }
                     setSetStopMarkers(cluster);
                 }}
             >
@@ -150,10 +158,9 @@ const styles = StyleSheet.create({
     stops_view: {
         justifyContent: 'center',
         backgroundColor: '#ff6700',
-        width: 10,
-        height: 10,
-        borderRadius: 2.5,
-        margin: 6,
+        width: 23,
+        height: 23,
+        borderRadius: 5,
     },
     clusterMarker: {
         zIndex: 1000,
@@ -161,15 +168,16 @@ const styles = StyleSheet.create({
     clusterView: {
         justifyContent: 'center',
         backgroundColor: '#ff6700',
-        width: 10,
-        height: 10,
-        borderRadius: 2.5,
-        margin: 6,
+        width: 20,
+        height: 20,
+        borderRadius: 5,
+        padding: 1,
     },
     clusterText: {
         justifyContent: 'center',
         alignContent: 'center',
         textAlign: 'center',
         color: '#fff',
+        fontSize: 12,
     },
 });
