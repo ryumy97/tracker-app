@@ -3,7 +3,7 @@ import { Circle, Marker } from 'react-native-maps';
 import { StyleSheet, View } from 'react-native';
 import { useLocation } from '../../contexts/LocationProvider';
 
-export default function CurrentLocationMarker() {
+export default function CurrentLocationMarker({ tracksViewChanges }) {
     const { location, heading } = useLocation();
     return (
         <>
@@ -11,19 +11,20 @@ export default function CurrentLocationMarker() {
                 <>
                     <Marker
                         anchor={{ x: 0.5, y: 0.5 }}
-                        style={style.marker}
+                        style={styles.marker}
                         coordinate={{
                             latitude: location.coords.latitude,
                             longitude: location.coords.longitude,
                         }}
+                        tracksViewChanges={tracksViewChanges}
                     >
-                        <View style={style.container}>
-                            <View style={style.circle}></View>
-                            <View style={style.halo}></View>
+                        <View style={styles.container}>
+                            <View style={styles.circle}></View>
+                            <View style={styles.halo}></View>
                             {heading ? (
                                 <View
                                     style={[
-                                        style.heading,
+                                        styles.heading,
                                         {
                                             transform: [
                                                 {
@@ -33,7 +34,7 @@ export default function CurrentLocationMarker() {
                                         },
                                     ]}
                                 >
-                                    <View style={style.headingArrow} />
+                                    <View style={styles.headingArrow} />
                                 </View>
                             ) : null}
                         </View>
@@ -56,7 +57,7 @@ export default function CurrentLocationMarker() {
 
 const markerColour = '#4285F4';
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     marker: {
         zIndex: 9999,
     },

@@ -4,28 +4,32 @@ import { useATContext } from '../contexts/ATContextProvider';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function LoadingPage({ navigation }) {
-    const { version, fetchVersion } = useATContext();
-    const [loading, setLoading] = useState(true);
+    const { version, fetchVersion, stops, fetchStops } = useATContext();
     const [shouldWait, setShouldWait] = useState(true);
 
-    useFocusEffect(useCallback(() => {
-        const timeOut = setTimeout(() => {
-            setShouldWait(false)
-        }, 1000)
+    useFocusEffect(
+        useCallback(() => {
+            const timeOut = setTimeout(() => {
+                setShouldWait(false);
+            }, 1000);
 
-        return () => clearTimeout(timeOut)
-    }, []))
+            return () => clearTimeout(timeOut);
+        }, [])
+    );
 
-    useFocusEffect(useCallback(() => {
-        fetchVersion()
-        .then(setLoading(false));
-    }))
+    useFocusEffect(
+        useCallback(() => {
+            (async () => {
+                await Promise.all([fetchStops(), fetchVersion()]);
+            })();
+        }, [])
+    );
 
     useEffect(() => {
-        if (!shouldWait && !loading) {
-            navigation.navigate('Map')
+        if (!shouldWait && version && stops.length !== 0) {
+            navigation.navigate('Map');
         }
-    }, [shouldWait, loading])
+    }, [shouldWait, version, stops]);
 
     return (
         <View style={styles.container}>

@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext } from 'react';
-import { getVersion } from '../services/ATService';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { getStops, getVersion } from '../services/ATService';
 
 const ATContext = createContext();
 
@@ -14,11 +14,18 @@ export function useATContext() {
 
 export default function ATContextProvider({ children }) {
     const [version, setVersion] = useState('');
+    const [stops, setStops] = useState([]);
 
     async function fetchVersion() {
-        return getVersion().then((version) => {
-            setVersion(version);
-        });
+        const version = await getVersion();
+        setVersion(version);
+        return version;
+    }
+
+    async function fetchStops() {
+        const stops = await getStops();
+        setStops(stops);
+        return stops;
     }
 
     return (
@@ -26,6 +33,8 @@ export default function ATContextProvider({ children }) {
             value={{
                 version,
                 fetchVersion,
+                stops,
+                fetchStops,
             }}
         >
             {children}

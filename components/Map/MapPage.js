@@ -5,9 +5,11 @@ import { useLocation } from '../../contexts/LocationProvider';
 import CurrentLocationMarker from './CurrentLocationMarker';
 import SearchBar from './SearchBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ClusterMarkers from './ClusterMarkers';
 
 export default function MapPage() {
-    const { errorMsg, location } = useLocation();
+    const { errorMsg, location, aspectRatio } = useLocation();
+    const [currentRegion, setCurrentRegion] = useState({});
     const [isMapReady, setIsMapReady] = useState(false);
     const mapRef = useRef(null);
     const searchBarRef = useRef(null);
@@ -17,7 +19,10 @@ export default function MapPage() {
             const {
                 coords: { latitude, longitude },
             } = location;
-            mapRef.current.animateToRegion({ latitude, longitude, latitudeDelta: 0.001, longitudeDelta: 0.005 }, 2000);
+            mapRef.current.animateToRegion(
+                { latitude, longitude, latitudeDelta: 0.015, longitudeDelta: 0.015 * aspectRatio },
+                500
+            );
         }
     }, [location, isMapReady]);
 
@@ -39,8 +44,12 @@ export default function MapPage() {
                 onTouchStart={() => {
                     searchBarRef.current.blur();
                 }}
+                onRegionChangeComplete={(region) => {
+                    setCurrentRegion(region);
+                }}
             >
-                <CurrentLocationMarker trackViewChanges={false} />
+                <CurrentLocationMarker tracksViewChanges={false} />
+                <ClusterMarkers currentRegion={currentRegion} />
             </MapView>
             <SafeAreaView style={styles.searchBar}>
                 <SearchBar ref={searchBarRef}></SearchBar>
