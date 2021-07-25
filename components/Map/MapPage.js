@@ -6,6 +6,7 @@ import CurrentLocationMarker from './CurrentLocationMarker';
 import SearchBar from './SearchBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ClusterMarkers from './ClusterMarkers';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default function MapPage() {
     const { errorMsg, location, aspectRatio } = useLocation();
@@ -51,8 +52,11 @@ export default function MapPage() {
                 <CurrentLocationMarker tracksViewChanges={false} />
                 <ClusterMarkers currentRegion={currentRegion} />
             </MapView>
-            <SafeAreaView style={styles.searchBar}>
+            <SafeAreaView style={styles.topWidgetContainer}>
                 <SearchBar ref={searchBarRef}></SearchBar>
+                <View style={styles.settingModalButton}>
+                    <Icon name="bars" size={20} color="#ff6700" />
+                </View>
             </SafeAreaView>
         </View>
     );
@@ -69,11 +73,22 @@ const styles = StyleSheet.create({
     map: {
         ...StyleSheet.absoluteFillObject,
     },
-    searchBar: {
+    topWidgetContainer: {
         position: 'absolute',
         top: 0,
         width: '100%',
-        marginLeft: 5,
-        marginRight: 5,
+        padding: 12,
+        paddingTop: 6,
+        flexDirection: 'row',
+    },
+    settingModalButton: {
+        backgroundColor: '#fff',
+        width: 42,
+        height: 42,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 21,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
