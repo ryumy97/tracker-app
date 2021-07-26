@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import MapView from 'react-native-maps';
 import { useLocation } from '../../contexts/LocationProvider';
 import CurrentLocationMarker from './CurrentLocationMarker';
@@ -40,64 +40,12 @@ export default function MapPage() {
                     setModalVisible(false);
                 }}
             >
+                <Pressable style={styles.modalBackground} onPress={() => setModalVisible(false)}></Pressable>
                 <View style={styles.modal}>
-                    <Pressable style={styles.modalBackground} onPress={() => setModalVisible(false)}></Pressable>
                     <View style={styles.card}>
-                        <View
-                            style={[
-                                {
-                                    height: 24,
-                                    width: '100%',
-                                    backgroundColor: '#ff6700',
-                                    borderTopLeftRadius: 6,
-                                    borderTopRightRadius: 6,
-                                    borderBottomColor: '#12154c',
-                                },
-                            ]}
-                        ></View>
-                        <View>
-                            <FlatList
-                                data={[
-                                    { key: 'Change Colours', name: 'palette' },
-                                    { key: 'About', name: 'address-card' },
-                                ]}
-                                renderItem={({ item }) => (
-                                    <View
-                                        style={[
-                                            {
-                                                paddingTop: 16,
-                                                paddingBottom: 12,
-                                                flexDirection: 'row',
-                                            },
-                                        ]}
-                                    >
-                                        <View
-                                            style={[
-                                                {
-                                                    flexBasis: 48,
-                                                    flexShrink: 1,
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                },
-                                            ]}
-                                        >
-                                            <Icon name={item.name} size={20} color="#ff6700"></Icon>
-                                        </View>
-                                        <Text
-                                            style={[
-                                                {
-                                                    flexBasis: 24,
-                                                    flexShrink: 1,
-                                                    flexGrow: 1,
-                                                },
-                                            ]}
-                                        >
-                                            {item.key}
-                                        </Text>
-                                    </View>
-                                )}
-                            ></FlatList>
-                        </View>
+                        <Pressable style={styles.closeButton} onPress={() => setModalVisible(false)}>
+                            <Icon name="times" size={20} color="#aaa"></Icon>
+                        </Pressable>
                     </View>
                 </View>
             </Modal>
@@ -180,9 +128,9 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#fff',
         width: '100%',
-        height: 'auto',
+        height: 500,
         borderColor: '#ff6700',
-        borderRadius: 6,
+        borderRadius: 12,
     },
     closeButton: {
         position: 'absolute',
