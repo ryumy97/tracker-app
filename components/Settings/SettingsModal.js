@@ -1,13 +1,26 @@
 import React from 'react';
 import { Animated, Easing, FlatList, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useState } from 'react/cjs/react.development';
+import { useLocation } from '../../contexts/LocationProvider';
 
 export default function SettingsModal(props) {
+    const { width } = useLocation();
+    const transformAnimation = new Animated.Value(0);
+    const translateScale = transformAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, -width],
+    });
+
+    const transformStyle = {
+        transform: [{ translateX: translateScale }],
+    };
+
     return (
         <Modal {...props}>
             <View style={styles.modal}>
                 <Pressable style={styles.modalBackground} onPress={props.handlePressClose}></Pressable>
-                <View style={styles.card}>
+                <Animated.View style={[styles.card, transformStyle]}>
                     <View
                         style={[
                             {
@@ -48,6 +61,13 @@ export default function SettingsModal(props) {
                                             Animated.timing(animatedValue, {
                                                 toValue: 0,
                                                 duration: 100,
+                                                easing: Easing.linear,
+                                                useNativeDriver: false,
+                                            }).start();
+
+                                            Animated.timing(transformAnimation, {
+                                                toValue: 1,
+                                                duration: 150,
                                                 easing: Easing.linear,
                                                 useNativeDriver: false,
                                             }).start();
@@ -92,7 +112,7 @@ export default function SettingsModal(props) {
                             }}
                         ></FlatList>
                     </View>
-                </View>
+                </Animated.View>
             </View>
         </Modal>
     );
