@@ -12,7 +12,6 @@ export default function MapPage({ navigation }) {
     const { errorMsg, location, aspectRatio } = useLocation();
     const [currentRegion, setCurrentRegion] = useState({});
     const [isMapReady, setIsMapReady] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
     const mapRef = useRef(null);
     const searchBarRef = useRef(null);
 
@@ -58,7 +57,7 @@ export default function MapPage({ navigation }) {
                 <Pressable
                     style={styles.settingModalButton}
                     onPress={() => {
-                        navigation.navigate('settingsMenu');
+                        navigation.navigate('SettingsModal');
                     }}
                 >
                     <Icon name="cog" size={20} color="#ff6700" />

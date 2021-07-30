@@ -4,10 +4,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoadingPage from './LoadingPage';
 import MapPage from './Map/MapPage';
-import SettingsModal from './Settings/SettingsModal';
+import SettingsMenu from './Settings/SettingsMenu';
+import ColorMenu from './Settings/ColorMenu';
+import AboutMenu from './Settings/AboutMenu';
 
 const RootStack = createStackNavigator();
 const MainStack = createStackNavigator();
+const SettingsModalStack = createStackNavigator();
 
 export default function Navigation() {
     const rightToLeftSlideAnimation = ({ current, next, inverted, layouts: { screen } }) => {
@@ -42,6 +45,24 @@ export default function Navigation() {
                 ],
             },
         };
+    };
+
+    const SettingsModalNavigation = () => {
+        return (
+            <SettingsModalStack.Navigator
+                screenOptions={{
+                    headerShown: false,
+                    cardStyle: { backgroundColor: 'transparent' },
+                    cardOverlayEnabled: true,
+                    cardStyleInterpolator: rightToLeftSlideAnimation,
+                }}
+                mode="modal"
+            >
+                <SettingsModalStack.Screen name="SettingsMenu" component={SettingsMenu} />
+                <SettingsModalStack.Screen name="ColorMenu" component={ColorMenu} />
+                <SettingsModalStack.Screen name="AboutMenu" component={AboutMenu} />
+            </SettingsModalStack.Navigator>
+        );
     };
 
     const MainStackNavigation = () => {
@@ -83,8 +104,8 @@ export default function Navigation() {
                 }}
                 mode="modal"
             >
-                <RootStack.Screen name="main" component={MainStackNavigation} />
-                <RootStack.Screen name="settingsMenu" component={SettingsModal} />
+                <RootStack.Screen name="Main" component={MainStackNavigation} />
+                <RootStack.Screen name="SettingsModal" component={SettingsModalNavigation} />
             </RootStack.Navigator>
         </NavigationContainer>
     );

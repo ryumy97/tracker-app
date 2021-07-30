@@ -2,7 +2,7 @@ import React from 'react';
 import { Animated, Easing, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-export default function SettingsModal({ navigation }) {
+export default function SettingsMenu({ navigation }) {
     return (
         <View style={styles.modal}>
             <Pressable
@@ -17,10 +17,20 @@ export default function SettingsModal({ navigation }) {
                     <FlatList
                         scrollEnabled={false}
                         data={[
-                            { key: 'Change Colours', name: 'palette', animatedValue: new Animated.Value(0) },
-                            { key: 'About', name: 'address-card', animatedValue: new Animated.Value(0) },
+                            {
+                                key: 'Change Colours',
+                                name: 'palette',
+                                navigationAction: 'ColorMenu',
+                                animatedValue: new Animated.Value(0),
+                            },
+                            {
+                                key: 'About',
+                                name: 'address-card',
+                                navigationAction: 'AboutMenu',
+                                animatedValue: new Animated.Value(0),
+                            },
                         ]}
-                        renderItem={({ item: { key, name, animatedValue } }) => {
+                        renderItem={({ item: { key, name, navigationAction, animatedValue } }) => {
                             const opacityScale = animatedValue.interpolate({
                                 inputRange: [0, 1],
                                 outputRange: ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.15)'],
@@ -30,6 +40,7 @@ export default function SettingsModal({ navigation }) {
                             };
                             return (
                                 <Pressable
+                                    disabled
                                     onPressIn={() => {
                                         Animated.timing(animatedValue, {
                                             toValue: 1,
@@ -45,6 +56,8 @@ export default function SettingsModal({ navigation }) {
                                             easing: Easing.linear,
                                             useNativeDriver: false,
                                         }).start();
+
+                                        navigation.navigate(navigationAction);
                                     }}
                                 >
                                     <Animated.View
