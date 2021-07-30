@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import MapView from 'react-native-maps';
-import SettingsModal from '../Settings/SettingsModal';
 import { useLocation } from '../../contexts/LocationProvider';
 import CurrentLocationMarker from './CurrentLocationMarker';
 import SearchBar from './SearchBar';
@@ -9,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ClusterMarkers from './ClusterMarkers';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-export default function MapPage() {
+export default function MapPage({ navigation }) {
     const { errorMsg, location, aspectRatio } = useLocation();
     const [currentRegion, setCurrentRegion] = useState({});
     const [isMapReady, setIsMapReady] = useState(false);
@@ -32,18 +31,6 @@ export default function MapPage() {
     return (
         <View style={styles.container}>
             {errorMsg ? <Text>{errorMsg}</Text> : null}
-            <SettingsModal
-                visible={modalVisible}
-                transparent={true}
-                statusBarTranslucent
-                animationType="fade"
-                onRequestClose={() => {
-                    setModalVisible(false);
-                }}
-                handlePressClose={() => {
-                    setModalVisible(false);
-                }}
-            ></SettingsModal>
             <MapView
                 ref={mapRef}
                 style={styles.map}
@@ -68,7 +55,12 @@ export default function MapPage() {
             </MapView>
             <SafeAreaView style={styles.topWidgetContainer}>
                 <SearchBar ref={searchBarRef}></SearchBar>
-                <Pressable style={styles.settingModalButton} onPress={() => setModalVisible(true)}>
+                <Pressable
+                    style={styles.settingModalButton}
+                    onPress={() => {
+                        navigation.navigate('settingsMenu');
+                    }}
+                >
                     <Icon name="cog" size={20} color="#ff6700" />
                 </Pressable>
             </SafeAreaView>
