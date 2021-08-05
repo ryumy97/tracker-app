@@ -4,8 +4,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoadingPage from './LoadingPage';
 import MapPage from './Map/MapPage';
+import SettingsMenu from './Settings/SettingsMenu';
+import ColorMenu from './Settings/ColorMenu';
+import AboutMenu from './Settings/AboutMenu';
 
-const Stack = createStackNavigator();
+const RootStack = createStackNavigator();
+const MainStack = createStackNavigator();
+const SettingsModalStack = createStackNavigator();
 
 export default function Navigation() {
     const rightToLeftSlideAnimation = ({ current, next, inverted, layouts: { screen } }) => {
@@ -42,17 +47,66 @@ export default function Navigation() {
         };
     };
 
-    return (
-        <NavigationContainer>
-            <Stack.Navigator
+    const SettingsModalNavigation = () => {
+        return (
+            <SettingsModalStack.Navigator
+                screenOptions={{
+                    headerShown: false,
+                    cardStyle: { backgroundColor: 'transparent' },
+                    cardOverlayEnabled: true,
+                    cardStyleInterpolator: rightToLeftSlideAnimation,
+                }}
+                mode="modal"
+            >
+                <SettingsModalStack.Screen name="SettingsMenu" component={SettingsMenu} />
+                <SettingsModalStack.Screen name="ColorMenu" component={ColorMenu} />
+                <SettingsModalStack.Screen name="AboutMenu" component={AboutMenu} />
+            </SettingsModalStack.Navigator>
+        );
+    };
+
+    const MainStackNavigation = () => {
+        return (
+            <MainStack.Navigator
                 screenOptions={{
                     headerShown: false,
                     cardStyleInterpolator: rightToLeftSlideAnimation,
                 }}
             >
-                <Stack.Screen name="Loading" component={LoadingPage} />
-                <Stack.Screen name="Map" component={MapPage} />
-            </Stack.Navigator>
+                <MainStack.Screen name="Loading" component={LoadingPage} />
+                <MainStack.Screen name="Map" component={MapPage} />
+            </MainStack.Navigator>
+        );
+    };
+
+    return (
+        <NavigationContainer>
+            <RootStack.Navigator
+                screenOptions={{
+                    headerShown: false,
+                    cardStyle: { backgroundColor: 'transparent' },
+                    cardOverlayEnabled: true,
+                    cardStyleInterpolator: ({ current: { progress } }) => ({
+                        cardStyle: {
+                            opacity: progress.interpolate({
+                                inputRange: [0, 0.5, 0.9, 1],
+                                outputRange: [0, 0.25, 0.7, 1],
+                            }),
+                        },
+                        overlayStyle: {
+                            opacity: progress.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [0, 0.5],
+                                extrapolate: 'clamp',
+                            }),
+                        },
+                    }),
+                }}
+                mode="modal"
+            >
+                <RootStack.Screen name="Main" component={MainStackNavigation} />
+                <RootStack.Screen name="SettingsModal" component={SettingsModalNavigation} />
+            </RootStack.Navigator>
         </NavigationContainer>
     );
 }
