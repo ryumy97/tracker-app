@@ -1,33 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Text, Pressable } from 'react-native';
+import { Text } from 'react-native';
+import ModalCard from '../atoms/ModalCard';
 
 export default function ColorMenu({ navigation }) {
     return (
-        <View style={styles.modal}>
-            <Pressable
-                style={styles.modalBackground}
-                onPress={() => {
-                    navigation.navigate('Map');
-                }}
-            ></Pressable>
+        <ModalCard navigation={navigation}>
             <Text>Color</Text>
-        </View>
+        </ModalCard>
     );
 }
-
-const styles = StyleSheet.create({
-    modal: {
-        justifyContent: 'center',
-        alignContent: 'center',
-        width: '100%',
-        height: '100%',
-        padding: 20,
-    },
-    modalBackground: {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-    },
-});
