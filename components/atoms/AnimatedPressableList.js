@@ -1,30 +1,34 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Animated, Easing, FlatList, Pressable, View, Text, StyleSheet } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import RadioButton from './RadioButton';
 
 export default function AnimatedPressableList({ data, scrollEnabled, disabled }) {
+    const animationRef = useRef({});
+
     return (
         <FlatList
             ItemSeparatorComponent={() => <View style={styles.seperator}></View>}
             scrollEnabled={scrollEnabled}
             data={data}
             renderItem={({ item: { key, text, iconName, action, type, isSelected } }) => {
-                const animatedValue = new Animated.Value(0);
-                const opacityScale = animatedValue.interpolate({
+                !animationRef.current[key] && (animationRef.current[key] = new Animated.Value(0));
+
+                const backgroundScale = animationRef.current[key].interpolate({
                     inputRange: [0, 1],
                     outputRange: ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.15)'],
                 });
                 const animatedScaleStyle = {
-                    backgroundColor: opacityScale,
+                    backgroundColor: backgroundScale,
                 };
+
                 return (
                     <Pressable
                         key={key}
                         disabled={disabled}
                         onPressIn={() => {
-                            Animated.timing(animatedValue, {
+                            Animated.timing(animationRef.current[key], {
                                 toValue: 1,
                                 duration: 150,
                                 easing: Easing.linear,
@@ -32,7 +36,7 @@ export default function AnimatedPressableList({ data, scrollEnabled, disabled })
                             }).start();
                         }}
                         onPressOut={() => {
-                            Animated.timing(animatedValue, {
+                            Animated.timing(animationRef.current[key], {
                                 toValue: 0,
                                 duration: 100,
                                 easing: Easing.linear,
@@ -41,6 +45,7 @@ export default function AnimatedPressableList({ data, scrollEnabled, disabled })
                             action();
                         }}
                     >
+                        {/* <Animated.View style={[styles.darkBackground]}></Animated.View> */}
                         <Animated.View style={[styles.row, animatedScaleStyle]}>
                             {iconName && (
                                 <View style={styles.icon}>
@@ -67,6 +72,15 @@ const styles = StyleSheet.create({
         paddingBottom: 12,
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    darkBackground: {
+        backgroundColor: 'rgba(0, 0, 0, 0.15)',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        opacity: 0,
     },
     seperator: {
         borderBottomColor: '#e0e0e0',
