@@ -1,11 +1,29 @@
 import React from 'react';
-import { Text } from 'react-native';
+import AnimatedPressableList from '../atoms/AnimatedPressableList';
 import ModalCard from '../atoms/ModalCard';
 
 export default function ColorMenu({ navigation }) {
     return (
-        <ModalCard navigation={navigation}>
-            <Text>Color</Text>
+        <ModalCard
+            onPressBackground={() => {
+                navigation.navigate('Map');
+            }}
+        >
+            <AnimatedPressableList
+                data={[
+                    {
+                        key: 'default',
+                        text: 'Default Color',
+                        // iconName: 'palette',
+                        action: () => {
+                            alert('hi');
+                        },
+                        isSelected: true,
+                        type: 'radio',
+                    },
+                ]}
+                scrollEnabled
+            ></AnimatedPressableList>
         </ModalCard>
     );
 }
