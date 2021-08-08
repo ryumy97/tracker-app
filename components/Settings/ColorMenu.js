@@ -1,8 +1,11 @@
 import React from 'react';
+import { useTheme } from '../../contexts/ThemeProvider';
 import AnimatedPressableList from '../atoms/AnimatedPressableList';
 import ModalCard from '../atoms/ModalCard';
 
 export default function ColorMenu({ navigation }) {
+    const { getKeys, setCurrentTheme, colours, isCurrentTheme } = useTheme();
+    const keys = getKeys();
     return (
         <ModalCard
             onPressBackground={() => {
@@ -10,18 +13,18 @@ export default function ColorMenu({ navigation }) {
             }}
         >
             <AnimatedPressableList
-                data={[
-                    {
-                        key: 'default',
-                        text: 'Default Color',
-                        // iconName: 'palette',
+                data={keys.map((key, index) => {
+                    const { name } = colours[key];
+                    return {
+                        key: key,
+                        text: name,
                         action: () => {
-                            alert('hi');
+                            setCurrentTheme(key);
                         },
-                        isSelected: true,
+                        isSelected: isCurrentTheme(key),
                         type: 'radio',
-                    },
-                ]}
+                    };
+                })}
                 scrollEnabled
             ></AnimatedPressableList>
         </ModalCard>

@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ThemeContext = createContext();
@@ -7,6 +7,7 @@ const THEME_KEY = 'THEME_COLOR_KEY';
 
 const colours = {
     defaultTheme: {
+        name: 'Default Theme',
         primary: '#ff6700',
         primaryLight: '#ff9e40',
         primaryDark: '#c43c00',
@@ -16,12 +17,23 @@ const colours = {
         text: '#fffff',
         shadow: '#e0e0e0',
     },
+    secondaryTheme: {
+        name: 'Secondary Theme',
+        primary: '#311b92',
+        primaryLight: '#6746c3',
+        primaryDark: '#000063',
+        secondary: '#263238',
+        secondaryLight: '#4f5b62',
+        secondaryDark: '#000a12',
+        text: '#fffff',
+        shadow: '#e0e0e0',
+    },
 };
 
 const getTheme = async () => {
     try {
         const value = await AsyncStorage.getItem(THEME_KEY);
-        if (value !== null) {
+        if (value) {
             return value;
         } else {
             return 'defaultTheme';
@@ -39,7 +51,7 @@ const storeTheme = async (theme) => {
     }
 };
 
-const getKeys = () => Object.keys(themes);
+const getKeys = () => Object.keys(colours);
 
 export function useTheme() {
     const context = useContext(ThemeContext);
@@ -51,29 +63,35 @@ export function useTheme() {
 }
 
 export default function ThemeProvider({ children }) {
-    const [theme, setTheme] = useState('defaultTheme');
-    const [colour, setColour] = useState({});
+    const [currentTheme, setCurrentTheme] = useState('defaultTheme');
+    const [currentColour, setCurrentColour] = useState({});
 
     useEffect(() => {
         (async () => {
             const theme = await getTheme();
-            setTheme(theme);
+            setCurrentTheme(theme);
         })();
     }, []);
 
     useEffect(() => {
         (async () => {
-            await storeTheme(theme);
-            setColour(colours[theme]);
+            await storeTheme(currentTheme);
+            setCurrentColour(colours[currentTheme]);
         })();
-    }, [theme]);
+        console.log(currentTheme);
+    }, [currentTheme]);
+
+    const isCurrentTheme = (theme) => theme === currentTheme;
 
     return (
         <ThemeContext.Provider
             value={{
                 getKeys,
-                setTheme,
-                colour,
+                setCurrentTheme,
+                isCurrentTheme,
+                colours,
+                currentColour,
+                currentTheme,
             }}
         >
             {children}
