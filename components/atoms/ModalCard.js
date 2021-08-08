@@ -1,14 +1,32 @@
 import React from 'react';
-import { Animated, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { useTheme } from '../../contexts/ThemeProvider';
 
 export default function ModalCard({ children, onPressBackground }) {
+    const { currentColour } = useTheme();
     return (
         <View style={styles.modal}>
             <Pressable style={styles.modalBackground} onPress={onPressBackground}></Pressable>
-            <Animated.View style={styles.card}>
-                <View style={styles.cardHeader}></View>
+            <View
+                style={[
+                    styles.card,
+                    {
+                        borderColor: currentColour.primary,
+                        backgroundColor: currentColour.background,
+                    },
+                ]}
+            >
+                <View
+                    style={[
+                        styles.cardHeader,
+                        {
+                            backgroundColor: currentColour.primary,
+                            borderBottomColor: currentColour.shadow,
+                        },
+                    ]}
+                ></View>
                 {children}
-            </Animated.View>
+            </View>
         </View>
     );
 }
@@ -29,18 +47,14 @@ const styles = StyleSheet.create({
         right: 0,
     },
     card: {
-        backgroundColor: '#fff',
         width: '100%',
         height: 'auto',
-        borderColor: '#ff6700',
         borderRadius: 6,
     },
     cardHeader: {
         height: 24,
         width: '100%',
-        backgroundColor: '#ff6700',
         borderTopLeftRadius: 6,
         borderTopRightRadius: 6,
-        borderBottomColor: '#12154c',
     },
 });

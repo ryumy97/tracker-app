@@ -14,8 +14,10 @@ const colours = {
         secondary: '#3f51b5',
         secondaryLight: '#757de8',
         secondaryDark: '#002984',
-        text: '#fffff',
+        text: '#000000',
+        textLight: '#ffffff',
         shadow: '#e0e0e0',
+        background: '#ffffff',
     },
     secondaryTheme: {
         name: 'Secondary Theme',
@@ -25,8 +27,10 @@ const colours = {
         secondary: '#263238',
         secondaryLight: '#4f5b62',
         secondaryDark: '#000a12',
-        text: '#fffff',
+        text: '#ffffff',
+        textLight: '#ffffff',
         shadow: '#e0e0e0',
+        background: '#000063',
     },
 };
 
@@ -63,8 +67,10 @@ export function useTheme() {
 }
 
 export default function ThemeProvider({ children }) {
-    const [currentTheme, setCurrentTheme] = useState('defaultTheme');
-    const [currentColour, setCurrentColour] = useState({});
+    const [currentTheme, setCurrentTheme] = useState();
+    const [currentColour, setCurrentColour] = useState({
+        primary: '#000',
+    });
 
     useEffect(() => {
         (async () => {
@@ -74,11 +80,11 @@ export default function ThemeProvider({ children }) {
     }, []);
 
     useEffect(() => {
-        (async () => {
-            await storeTheme(currentTheme);
-            setCurrentColour(colours[currentTheme]);
-        })();
-        console.log(currentTheme);
+        currentTheme &&
+            (async () => {
+                await storeTheme(currentTheme);
+                setCurrentColour(colours[currentTheme]);
+            })();
     }, [currentTheme]);
 
     const isCurrentTheme = (theme) => theme === currentTheme;

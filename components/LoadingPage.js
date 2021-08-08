@@ -2,8 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { useATContext } from '../contexts/ATContextProvider';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTheme } from '../contexts/ThemeProvider';
 
 export default function LoadingPage({ navigation }) {
+    const { currentColour } = useTheme();
     const { version, fetchVersion, stops, fetchStops } = useATContext();
     const [shouldWait, setShouldWait] = useState(true);
 
@@ -32,8 +34,25 @@ export default function LoadingPage({ navigation }) {
     }, [shouldWait, version, stops]);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>{version}</Text>
+        <View
+            style={[
+                styles.container,
+                {
+                    backgroundColor: currentColour.primary,
+                    color: currentColour.textLight,
+                },
+            ]}
+        >
+            <Text
+                style={[
+                    styles.text,
+                    {
+                        color: currentColour.textLight,
+                    },
+                ]}
+            >
+                {version}
+            </Text>
         </View>
     );
 }
@@ -42,13 +61,10 @@ const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
         flex: 1,
-        backgroundColor: '#ff6700',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#fff',
     },
     text: {
         fontSize: 16,
-        color: '#fff',
     },
 });

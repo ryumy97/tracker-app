@@ -7,8 +7,10 @@ import SearchBar from './SearchBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ClusterMarkers from './ClusterMarkers';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useTheme } from '../../contexts/ThemeProvider';
 
 export default function MapPage({ navigation }) {
+    const { currentColour } = useTheme();
     const { errorMsg, location, aspectRatio } = useLocation();
     const [currentRegion, setCurrentRegion] = useState({});
     const [isMapReady, setIsMapReady] = useState(false);
@@ -28,7 +30,14 @@ export default function MapPage({ navigation }) {
     }, [location, isMapReady]);
 
     return (
-        <View style={styles.container}>
+        <View
+            style={[
+                styles.container,
+                {
+                    backgroundColor: currentColour.primary,
+                },
+            ]}
+        >
             {errorMsg ? <Text>{errorMsg}</Text> : null}
             <MapView
                 ref={mapRef}
@@ -55,12 +64,18 @@ export default function MapPage({ navigation }) {
             <SafeAreaView style={styles.topWidgetContainer}>
                 <SearchBar ref={searchBarRef}></SearchBar>
                 <Pressable
-                    style={styles.settingModalButton}
+                    style={[
+                        styles.settingModalButton,
+                        {
+                            backgroundColor: currentColour.background,
+                            borderColor: currentColour.shadow,
+                        },
+                    ]}
                     onPress={() => {
                         navigation.navigate('SettingsModal');
                     }}
                 >
-                    <Icon name="cog" size={20} color="#ff6700" />
+                    <Icon name="cog" size={20} color={currentColour.primary} />
                 </Pressable>
             </SafeAreaView>
         </View>
@@ -71,7 +86,6 @@ const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
         flex: 1,
-        backgroundColor: '#ff6700',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -87,11 +101,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     settingModalButton: {
-        backgroundColor: '#fff',
         width: 42,
         height: 42,
         borderWidth: 1,
-        borderColor: '#ddd',
         borderRadius: 21,
         justifyContent: 'center',
         alignItems: 'center',

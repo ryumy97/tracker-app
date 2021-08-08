@@ -2,14 +2,25 @@ import React, { useRef } from 'react';
 import { Animated, Easing, FlatList, Pressable, View, Text, StyleSheet } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useTheme } from '../../contexts/ThemeProvider';
 import RadioButton from './RadioButton';
 
 export default function AnimatedPressableList({ data, scrollEnabled, disabled }) {
+    const { currentColour } = useTheme();
     const animationRef = useRef({});
 
     return (
         <FlatList
-            ItemSeparatorComponent={() => <View style={styles.seperator}></View>}
+            ItemSeparatorComponent={() => (
+                <View
+                    style={[
+                        styles.seperator,
+                        {
+                            borderBottomColor: currentColour.shadow,
+                        },
+                    ]}
+                ></View>
+            )}
             scrollEnabled={scrollEnabled}
             data={data}
             renderItem={({ item: { key, text, iconName, action, type, isSelected } }) => {
@@ -45,19 +56,28 @@ export default function AnimatedPressableList({ data, scrollEnabled, disabled })
                             action();
                         }}
                     >
-                        {/* <Animated.View style={[styles.darkBackground]}></Animated.View> */}
                         <Animated.View style={[styles.row, animatedScaleStyle]}>
                             {iconName && (
                                 <View style={styles.icon}>
-                                    <Icon name={iconName} size={20} color="#ff6700"></Icon>
+                                    <Icon name={iconName} size={20} color={currentColour.primary}></Icon>
                                 </View>
                             )}
                             {type === 'radio' && (
                                 <View style={styles.icon}>
-                                    <RadioButton color="#ff6700" isSelected={isSelected}></RadioButton>
+                                    <RadioButton color={currentColour.primary} isSelected={isSelected}></RadioButton>
                                 </View>
                             )}
-                            <Text style={[styles.text, !(iconName || type) && styles.textPadding]}>{text}</Text>
+                            <Text
+                                style={[
+                                    styles.text,
+                                    !(iconName || type) && styles.textPadding,
+                                    {
+                                        color: currentColour.text,
+                                    },
+                                ]}
+                            >
+                                {text}
+                            </Text>
                         </Animated.View>
                     </Pressable>
                 );
@@ -74,7 +94,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     darkBackground: {
-        backgroundColor: 'rgba(0, 0, 0, 0.15)',
         position: 'absolute',
         top: 0,
         left: 0,
@@ -83,7 +102,6 @@ const styles = StyleSheet.create({
         opacity: 0,
     },
     seperator: {
-        borderBottomColor: '#e0e0e0',
         borderBottomWidth: 1,
     },
     icon: {
