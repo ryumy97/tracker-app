@@ -5,7 +5,9 @@ import { useLocation } from '../../contexts/LocationProvider';
 import Supercluster from 'supercluster';
 import { Marker } from 'react-native-maps';
 import { StyleSheet, View, Text } from 'react-native';
+import { useTheme } from '../../contexts/ThemeProvider';
 export default function ClusterMarkers({ currentRegion }) {
+    const { currentColour } = useTheme();
     const { width } = useLocation();
     const { stops } = useATContext();
     const [stopMarkers, setSetStopMarkers] = useState([]);
@@ -74,8 +76,24 @@ export default function ClusterMarkers({ currentRegion }) {
                             }}
                             tracksViewChanges={false}
                         >
-                            <View style={styles.clusterView}>
-                                <Text style={styles.clusterText}>{point_count}</Text>
+                            <View
+                                style={[
+                                    styles.clusterView,
+                                    {
+                                        backgroundColor: currentColour.primary,
+                                    },
+                                ]}
+                            >
+                                <Text
+                                    style={[
+                                        styles.clusterText,
+                                        {
+                                            color: currentColour.textLight,
+                                        },
+                                    ]}
+                                >
+                                    {point_count}
+                                </Text>
                             </View>
                         </Marker>
                     );
@@ -92,7 +110,14 @@ export default function ClusterMarkers({ currentRegion }) {
                         }}
                         tracksViewChanges={false}
                     >
-                        <View style={styles.stopsView}></View>
+                        <View
+                            style={[
+                                styles.stopsView,
+                                {
+                                    backgroundColor: currentColour.primary,
+                                },
+                            ]}
+                        ></View>
                     </Marker>
                 );
             }
@@ -108,7 +133,6 @@ const styles = StyleSheet.create({
     },
     stopsView: {
         justifyContent: 'center',
-        backgroundColor: '#12154c',
         width: 23,
         height: 23,
         borderRadius: 5,
@@ -118,7 +142,6 @@ const styles = StyleSheet.create({
     },
     clusterView: {
         justifyContent: 'center',
-        backgroundColor: '#12154c',
         width: 20,
         height: 20,
         borderRadius: 5,
@@ -128,7 +151,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignContent: 'center',
         textAlign: 'center',
-        color: '#fff',
         fontSize: 12,
     },
 });
